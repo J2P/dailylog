@@ -14,6 +14,7 @@ class Home extends Component {
     this.state = {
       text: '',
       tag: 'completed',
+      today: true,
       posts: {}
     }
     this.getPosts()
@@ -58,13 +59,16 @@ class Home extends Component {
   }
 
   handleDatePicker = (date) => {
+    this.setState({ 
+      today: date.format('YYYY-MM-DD') === moment(new Date()).format('YYYY-MM-DD')
+    })
     this.getPosts(date.format('YYYY-MM-DD'))
   }
 
   getText = (tag) => ({ 'completed': '한일', 'think': '생각', 'read': '읽음' }[tag])
 
   render() {
-    const { tag, text, posts } = this.state
+    const { tag, text, posts, today } = this.state
     const selectBefore = (
       <Select defaultValue={tag} style={{ width: 90 }} onChange={this.handleTagChange}>
         <Option value="completed">한일</Option>
@@ -100,13 +104,14 @@ class Home extends Component {
             defaultValue={moment(new Date(), 'YYYY-MM-DD')}
             onChange={this.handleDatePicker}
           />
-          <Input
+          {today && 
+            <Input
             size="large"
             style={{ 'width': '80%', 'margin': '5% 0' }}
             value={text}
             addonBefore={selectBefore}
             onChange={this.handleChange}
-            onPressEnter={this.handleEnter} />
+            onPressEnter={this.handleEnter} />}
         </div>
         <Timeline mode="alternate">
           {timelines.reverse()}
